@@ -61,7 +61,7 @@ async function sendNote(note_info) {
         throw new Error('due date is before current date');
     }
     if (sender.earliest_note_index > -1) {
-        let earliest_note = sender.notes_sent[sender.earliest_note_index];
+        let earliest_note = sender.notes_owed[sender.earliest_note_index];
         if (earliest_note.expiration_date.getTime() < note_info.timestamp.getTime()) {
             let event = factory.newEvent('org.budblocks', 'AccountFrozen');
             event.message = earliest_note.message;
@@ -75,7 +75,8 @@ async function sendNote(note_info) {
     }
 
     let factory = getFactory();
-    let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat((sender.notes_sent++).to_string()));
+    let new_num = num_notes_sent++;
+    let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat(new_num.to_string()));
     note.sender = factory.newRelationship('org.budblocks', 'Buddy', sender.username);
     note.receiver = factory.newRelationship('org.budblocks', 'Buddy', receiver.username);
     note.amount = note_info.amount;
@@ -86,9 +87,14 @@ async function sendNote(note_info) {
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.add(note);
 
+    receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
+
+    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    buddyRegistry.update(receiver);
+
     let event = factory.newEvent('org.budblocks', 'NoteSent');
-    event.sender = sender.name;
-    event.receiver = receiver.name;
+    event.sender = sender.username;
+    event.receiver = receiver.username;
 
     event.amount = note_info.amount;
     event.message = note_info.message;
@@ -114,13 +120,14 @@ async function acceptNote(trade) {
     noteRegistry.update(note);
 
     let factory = getFactory();
-    sender.notes_sent.push(factory.newRelationship('org.budblocks', 'Note', note.ID));
-    receiver.notes_owed.push(sender.notes_sent[sender.notes_sent.length - 1]);
+    sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number));
+    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
+    receiver.notes_pending.splice(receiver.notes_pending.indexOf(note));
 
     if (sender.earliest_note_index > -1) {
-        let earliest_note = sender.notes_sent[sender.earliest_note_index];
+        let earliest_note = sender.notes_owed[sender.earliest_note_index];
         if (note.expiration_date.getTime() < earliest_note.expiration_date.getTime()) {
-            sender.earliest_note_index = sender.notes_sent.length - 1;
+            sender.earliest_note_index = sender.notes_owed.length - 1;
         }
     }
     else {
@@ -132,8 +139,8 @@ async function acceptNote(trade) {
     buddyRegistry.update(receiver);
 
     let event = factory.newEvent('org.budblocks', 'NoteAccepted');
-    event.sender = sender.name;
-    event.receiver = receiver.name;
+    event.sender = sender.username;
+    event.receiver = receiver.username;
     event.amount = note.amount;
     event.message = note.message;
     event.expiration_date = note.expiration_date;
@@ -167,17 +174,17 @@ async function resolveNote(trade) {
     receiver.balance = receiver.balance - note.amount;
 
     //get new earliest note of sender
-    if (sender.notes_sent.length > 1) {
-        let earliest_note = sender.notes_sent[sender.earliest_note_index];
+    if (sender.notes_owed.length > 1) {
+        let earliest_note = sender.notes_owed[sender.earliest_note_index];
         if (note.number === earliest_note.number) {
-            let new_earliest = sender.notes_sent[0];
+            let new_earliest = sender.notes_owed[0];
             let new_earliest_index = sender.earliest_note_index > 0 ? 0 : 1;
-            for (let i = new_earliest_index === 0 ? 1 : 0; i < sender.notes_sent.length; ++i) {
+            for (let i = new_earliest_index === 0 ? 1 : 0; i < sender.notes_owed.length; ++i) {
                 if (i === sender.earliest_note_index) {
                     continue;
                 }
-                else if (sender.notes_sent[i].expiration_date.getTime() < new_earliest.expiration_date.getTime()) {
-                    new_earliest = sender.notes_sent[i];
+                else if (sender.notes_owed[i].expiration_date.getTime() < new_earliest.expiration_date.getTime()) {
+                    new_earliest = sender.notes_owed[i];
                     new_earliest_index = i;
                 }
             }
@@ -189,12 +196,12 @@ async function resolveNote(trade) {
     }
 
     //remove note from sender-receiver notes
-    let sender_index = sender.notes_sent.indexOf(note);
+    let sender_index = sender.notes_owed.indexOf(note);
     if (sender.earliest_note_index > sender_index) {
         --sender.earliest_note_index;
     }
-    sender.notes_sent.splice(sender_index);
-    receiver.notes_owed.splice(receiver.notes_owed.indexOf(note));
+    sender.notes_owed.splice(sender_index);
+    receiver.notes_received.splice(receiver.notes_received.indexOf(note));
 
     //delete note
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
@@ -208,8 +215,8 @@ async function resolveNote(trade) {
     //emit event
     let factory = getFactory();
     let event = factory.newEvent('org.budblocks', 'NoteResolved');
-    event.sender = sender.name;
-    event.receiver = receiver.name;
+    event.sender = sender.username;
+    event.receiver = receiver.username;
     event.amount = note.amount;
     event.message = note.message;
     event.expiration_date = note.expiration_date;
@@ -217,4 +224,3 @@ async function resolveNote(trade) {
     event.note_number = note.number;
     emit(event);
 }
-
