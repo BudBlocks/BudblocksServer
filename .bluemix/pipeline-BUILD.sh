@@ -36,7 +36,7 @@ function test_composer_contract {
     CONTRACT=$1
     echo testing composer contract ${CONTRACT}
     pushd contracts/${CONTRACT}
-    #npm install
+    npm install
     npm test
     rm -rf node_modules
     popd
@@ -75,7 +75,7 @@ function test_node_app {
     echo testing node.js app ${CONTRACT}
     pushd apps/${CONTRACT}
     npm install
-    # npm test
+    npm test
     SCRIPTS="prepublish prepare prepublishOnly prepack"
     for SCRIPT in ${SCRIPTS}
     do
