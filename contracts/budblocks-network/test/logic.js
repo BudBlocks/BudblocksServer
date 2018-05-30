@@ -17,8 +17,8 @@
  * Write the unit tests for your transction processor functions here
  */
 
-    it('Easy Test', function() {
-        return true;
-    });
+it('Easy Test', function() {
+    return true;
+});
 
 
