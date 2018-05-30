@@ -3,8 +3,8 @@
     "composer": "^0.19.5"
   },
   "name": "budblocks-network",
-  "version": "0.0.1",
-  "description": "StarBlocks network for transactions of digital currency",
+  "version": "0.5.1",
+  "description": "Blockchain for Buds",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/budblocks-network.bna",
     "pretest": "npm run lint",
@@ -15,8 +15,8 @@
     "composer",
     "composer-network"
   ],
-  "author": "Wesley Ford",
-  "email": "webwesley@fordcochrane.com",
+  "author": "Coleman Smith",
+  "email": "colemansmith21@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
     "composer-admin": "^0.19.5",
@@ -34,3 +34,4 @@
     "mocha": "latest"
   }
 }
+

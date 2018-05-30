@@ -1,42 +1,98 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * Write your model definitions here
- */
-
 namespace org.budblocks
 
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
+participant Buddy identified by username {
+  o String username
+  o String name
+  o Integer notes_sent default=0
+
+  --> Note[] notes_received optional
+  --> Note[] notes_owed optional
+  o Integer earliest_note_index default=-1
+
+  o Integer[] time_over optional // the time youve been over in seconds each time you were over
+  o Integer[] amount_over optional // the amount the note was worth each time you went over
 }
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
+asset Note identified by number {
+  o String number
+  --> Buddy sender
+  --> Buddy reciever
+
+  o Integer amount
+  o String field
+  o DateTime expiration_date
+  o Boolean accepted default=false
+  o DateTime date_sent
 }
 
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
+transaction addBalance {
+  --> Buddy buddy
+  o Integer amount
+}
+transaction removeBalance {
+  --> Buddy buddy
+  o Integer amount
+}
+transaction sendNote {
+  --> Buddy sender
+  --> Buddy receiver
+
+  o Integer amount
+  o String field default=""
+  o DateTime expiration_date
+}
+transaction acceptNote {
+  --> Note note
+}
+transaction resolveNote {
+  --> Note note
 }
 
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
+///There will be a bunch of events, port from the last one
+
+
+event AccountFrozen {  // if you try to give a note but your account is frozen
+  o String field
+  o String recipient_name
+  o Integer amount
+  o DateTime expiration_date
+  o DateTime date_sent
+}
+event BalanceTooLow {  // if you tried to resolve a note or remove money but your balance is too low
+  o Integer balance
+  o Integer amount
+}
+event InvalidNote {
+  o String reason
+}
+
+event NoteSent {  // if you sent a note to someone
+  o String sender // name
+  o String reciever // name
+
+  o Integer amount
+  o String field
+  o DateTime expiration_date
+  o DateTime date_sent
+  o String note_number
+}
+event NoteAccepted {
+  o String sender // name
+  o String reciever // name
+
+  o Integer amount
+  o String field
+  o DateTime expiration_date
+  o DateTime date_sent
+  o String note_number
+}
+event NoteResolved {  // if you resolved a note you gave someone
+  o String sender // name
+  o String reciever // name
+
+  o Integer amount
+  o String field
+  o DateTime expiration_date
+  o DateTime date_sent
+  o String note_number
 }
