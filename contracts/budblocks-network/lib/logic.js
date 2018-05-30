@@ -30,7 +30,7 @@ async function removeBalance(withdrawl) {
     }
 
     buddy.balance = buddy.balance - withdrawl.amount;
-    
+
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(buddy);
 }
@@ -44,7 +44,7 @@ async function sendNote(note_info) {
     let sender = note_info.sender;
     let receiver = note_info.receiver;
 
-    if (sender.username == receiver.username) {
+    if (sender.username === receiver.username) {
         let factory = getFactory();
         let event = factory.newEvent('org.budblocks', 'InvalidNote');
         event.reason = 'recipient is the same as sender';
@@ -80,14 +80,14 @@ async function sendNote(note_info) {
     note.field = note_info.field;
     note.expiration_date = note_info.expiration_date;
     note.date_sent = note_info.timestamp;
-    
+
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.add(note);
 
     let event = factory.newEvent('org.budblocks', 'NoteSent');
     event.sender = sender.name;
     event.reciever = receiver.name;
-  
+
     event.amount = note_info.amount;
     event.field = note_info.field;
     event.expiration_date = note_info.expiration_date;
@@ -103,8 +103,8 @@ async function sendNote(note_info) {
  */
 async function acceptNote(trade) {
     let note = trade.note; // just for ease of use
-    sender = note.sender;
-    receiver = note.receiver;
+    let sender = note.sender;
+    let receiver = note.receiver;
 
     note.accepted = True;
 
@@ -146,8 +146,8 @@ async function acceptNote(trade) {
  */
 async function resolveNote(trade) {
     let note = trade.note; // just for ease of use
-    sender = note.sender;
-    receiver = note.receiver;
+    let sender = note.sender;
+    let receiver = note.receiver;
 
     //check balance
     if (sender.balance - note.amount < 0) {
@@ -166,11 +166,11 @@ async function resolveNote(trade) {
     //get new earliest note of sender
     if (sender.notes_sent.length > 1) {
         let earliest_note = sender.notes_sent[sender.earliest_note_index];
-        if (note.number == earliest_note.number) {
+        if (note.number === earliest_note.number) {
             let new_earliest = sender.notes_sent[0];
             let new_earliest_index = sender.earliest_note_index > 0 ? 0 : 1;
-            for (i = new_earliest_index == 0 ? 1 : 0; i < sender.notes_sent.length; ++i) {
-                if (i == sender.earliest_note_index) {
+            for (let i = new_earliest_index === 0 ? 1 : 0; i < sender.notes_sent.length; ++i) {
+                if (i === sender.earliest_note_index) {
                     continue;
                 }
                 else if (sender.notes_sent[i].expiration_date.getTime() < new_earliest.expiration_date.getTime()) {
