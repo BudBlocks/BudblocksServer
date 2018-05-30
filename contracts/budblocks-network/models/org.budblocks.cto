@@ -3,6 +3,7 @@ namespace org.budblocks
 participant Buddy identified by username {
   o String username
   o String name
+  o Integer balance default=0
   o Integer notes_sent default=0
 
   --> Note[] notes_received optional
@@ -16,10 +17,10 @@ participant Buddy identified by username {
 asset Note identified by number {
   o String number
   --> Buddy sender
-  --> Buddy reciever
+  --> Buddy receiver
 
   o Integer amount
-  o String field
+  o String message
   o DateTime expiration_date
   o Boolean accepted default=false
   o DateTime date_sent
@@ -38,7 +39,7 @@ transaction sendNote {
   --> Buddy receiver
 
   o Integer amount
-  o String field default=""
+  o String message default=""
   o DateTime expiration_date
 }
 transaction acceptNote {
@@ -52,7 +53,7 @@ transaction resolveNote {
 
 
 event AccountFrozen {  // if you try to give a note but your account is frozen
-  o String field
+  o String message
   o String recipient_name
   o Integer amount
   o DateTime expiration_date
@@ -68,31 +69,32 @@ event InvalidNote {
 
 event NoteSent {  // if you sent a note to someone
   o String sender // name
-  o String reciever // name
+  o String receiver // name
 
   o Integer amount
-  o String field
+  o String message
   o DateTime expiration_date
   o DateTime date_sent
   o String note_number
 }
 event NoteAccepted {
   o String sender // name
-  o String reciever // name
+  o String receiver // name
 
   o Integer amount
-  o String field
+  o String message
   o DateTime expiration_date
   o DateTime date_sent
   o String note_number
 }
 event NoteResolved {  // if you resolved a note you gave someone
   o String sender // name
-  o String reciever // name
+  o String receiver // name
 
   o Integer amount
-  o String field
+  o String message
   o DateTime expiration_date
   o DateTime date_sent
   o String note_number
 }
+
