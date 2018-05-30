@@ -12,31 +12,17 @@
  * limitations under the License.
  */
 
-/**
- * Write your model definitions here
- */
+'use strict';
 
-namespace org.budblocks
+const composerSteps = require('composer-cucumber-steps');
+const cucumber = require('cucumber');
 
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
-}
+module.exports = function () {
+    composerSteps.call(this);
+};
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
-}
-
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
-}
-
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
+if (cucumber.defineSupportCode) {
+    cucumber.defineSupportCode((context) => {
+        module.exports.call(context);
+    });
 }
