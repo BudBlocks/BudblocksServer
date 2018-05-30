@@ -17,4 +17,4 @@
  * Write the unit tests for your transction processor functions here
  */
 
-console.log("Wee Good");
+console.log('Wee Gud');
