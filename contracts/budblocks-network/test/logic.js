@@ -129,33 +129,33 @@ describe('#' + namespace, () => {
 
         const participantRegistry = await businessNetworkConnection.getParticipantRegistry(participantNS);
         // Create the participants.
-        const alice = factory.newResource(namespace, participantType, 'alice@email.com');
-        alice.firstName = 'Alice';
-        alice.lastName = 'A';
+        //const alice = factory.newResource(namespace, participantType, 'alice@email.com');
+        //alice.firstName = 'Alice';
+        //alice.lastName = 'A';
 
-        const bob = factory.newResource(namespace, participantType, 'bob@email.com');
-        bob.firstName = 'Bob';
-        bob.lastName = 'B';
+        //const bob = factory.newResource(namespace, participantType, 'bob@email.com');
+        //bob.firstName = 'Bob';
+        //bob.lastName = 'B';
 
-        participantRegistry.addAll([alice, bob]);
+        //participantRegistry.addAll([alice, bob]);
 
-        const assetRegistry = await businessNetworkConnection.getAssetRegistry(assetNS);
+        //const assetRegistry = await businessNetworkConnection.getAssetRegistry(assetNS);
         // Create the assets.
-        const asset1 = factory.newResource(namespace, assetType, '1');
-        asset1.owner = factory.newRelationship(namespace, participantType, 'alice@email.com');
-        asset1.value = '10';
+        //const asset1 = factory.newResource(namespace, assetType, '1');
+        //asset1.owner = factory.newRelationship(namespace, participantType, 'alice@email.com');
+        //asset1.value = '10';
 
-        const asset2 = factory.newResource(namespace, assetType, '2');
-        asset2.owner = factory.newRelationship(namespace, participantType, 'bob@email.com');
-        asset2.value = '20';
+        //const asset2 = factory.newResource(namespace, assetType, '2');
+        //asset2.owner = factory.newRelationship(namespace, participantType, 'bob@email.com');
+        //asset2.value = '20';
 
-        assetRegistry.addAll([asset1, asset2]);
+        //assetRegistry.addAll([asset1, asset2]);
 
         // Issue the identities.
-        let identity = await businessNetworkConnection.issueIdentity(participantNS + '#alice@email.com', 'alice1');
-        await importCardForIdentity(aliceCardName, identity);
-        identity = await businessNetworkConnection.issueIdentity(participantNS + '#bob@email.com', 'bob1');
-        await importCardForIdentity(bobCardName, identity);
+        //let identity = await businessNetworkConnection.issueIdentity(participantNS + '#alice@email.com', 'alice1');
+        //await importCardForIdentity(aliceCardName, identity);
+        //identity = await businessNetworkConnection.issueIdentity(participantNS + '#bob@email.com', 'bob1');
+        //await importCardForIdentity(bobCardName, identity);
     });
 
     /**
