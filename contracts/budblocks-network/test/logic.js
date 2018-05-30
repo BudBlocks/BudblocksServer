@@ -18,3 +18,4 @@
  */
 
 console.log('Wee Gud');
+return true;
