@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * add value to a buddy's balance
  * @param {org.budblocks.addBalance} deposit - add value to the user's balance
@@ -215,3 +217,4 @@ async function resolveNote(trade) {
     event.note_number = note.number;
     emit(event);
 }
+
