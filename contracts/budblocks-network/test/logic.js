@@ -173,9 +173,9 @@ describe('#' + namespace, () => {
         factory = businessNetworkConnection.getBusinessNetwork().getFactory();
     }
 
-	it("Easy Test", function() {
-		return true;
-	});
+    it('Easy Test', function() {
+        return true;
+    });
 
 
 });
