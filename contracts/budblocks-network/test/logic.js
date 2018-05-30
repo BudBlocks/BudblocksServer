@@ -173,9 +173,7 @@ describe('#' + namespace, () => {
         factory = businessNetworkConnection.getBusinessNetwork().getFactory();
     }
 
-    it('Alice can read all of the assets', async () => {
-       
-    });
+    it('Alice can read all of the assets', async () => {});
 
    
 });
