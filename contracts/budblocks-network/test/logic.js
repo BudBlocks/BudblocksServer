@@ -29,7 +29,7 @@ chai.use(require('chai-as-promised'));
 const namespace = 'org.budblocks';
 const assetType = 'SampleAsset';
 const assetNS = namespace + '.' + assetType;
-const participantType = 'Consumer';
+const participantType = 'buddy';
 const participantNS = namespace + '.' + participantType;
 
 describe('#' + namespace, () => {
