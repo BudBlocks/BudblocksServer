@@ -12,7 +12,7 @@ async function addBalance(deposit) {
     buddyRegistry.update(buddy);
 }
 
- /**
+/**
  * remove value from a buddy's balance
  * @param {org.budblocks.removeBalance} withdrawl - remove value from the user's balance
  * @transaction
@@ -35,7 +35,7 @@ async function removeBalance(withdrawl) {
     buddyRegistry.update(buddy);
 }
 
- /**
+/**
  * send a note from one buddy to another
  * @param {org.budblocks.sendNote} note_info - the trade to be processed
  * @transaction
@@ -96,7 +96,7 @@ async function sendNote(note_info) {
     emit(event);
 }
 
- /**
+/**
  * resolve a note the user owes another buddy
  * @param {org.budblocks.acceptNote} trade - the trade to be processed
  * @transaction
@@ -106,17 +106,18 @@ async function acceptNote(trade) {
     let sender = note.sender;
     let receiver = note.receiver;
 
-    note.accepted = True;
+    note.accepted = true;
 
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.update(note);
 
+    let factory = getFactory();
     sender.notes_sent.push(factory.newRelationship('org.budblocks', 'Note', note.ID));
     receiver.notes_owed.push(sender.notes_sent[sender.notes_sent.length - 1]);
 
     if (sender.earliest_note_index > -1) {
         let earliest_note = sender.notes_sent[sender.earliest_note_index];
-        if (expiration_date.getTime() < earliest_note.expiration_date.getTime()) {
+        if (note.expiration_date.getTime() < earliest_note.expiration_date.getTime()) {
             sender.earliest_note_index = sender.notes_sent.length - 1;
         }
     }
@@ -126,7 +127,7 @@ async function acceptNote(trade) {
 
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(sender);
-    buddyRegistry.update(recevier);
+    buddyRegistry.update(receiver);
 
     let event = factory.newEvent('org.budblocks', 'NoteAccepted');
     event.sender = sender.name;
@@ -139,7 +140,7 @@ async function acceptNote(trade) {
     emit(event);
 }
 
- /**
+/**
  * resolve a note the user owes another buddy
  * @param {org.budblocks.resolveNote} trade - the trade to be processed
  * @transaction
@@ -186,7 +187,7 @@ async function resolveNote(trade) {
     }
 
     //remove note from sender-receiver notes
-    sender_index = sender.notes_sent.indexOf(note);
+    let sender_index = sender.notes_sent.indexOf(note);
     if (sender.earliest_note_index > sender_index) {
         --sender.earliest_note_index;
     }
@@ -200,9 +201,10 @@ async function resolveNote(trade) {
     //update buddyRegistry
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(sender);
-    buddyRegistry.update(recevier);
+    buddyRegistry.update(receiver);
 
     //emit event
+    let factory = getFactory();
     let event = factory.newEvent('org.budblocks', 'NoteResolved');
     event.sender = sender.name;
     event.reciever = receiver.name;
