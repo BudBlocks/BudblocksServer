@@ -175,5 +175,4 @@ describe('#' + namespace, () => {
 
     it('Alice can read all of the assets', async () => {});
 
-   
 });
