@@ -75,8 +75,8 @@ async function sendNote(note_info) {
     }
 
     let factory = getFactory();
-    let new_num = sender.num_notes_sent++;
-    let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat(new_num.to_string()));
+    // let new_num = sender.num_notes_sent++;
+    let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat((sender.num_notes_sent++).toString()));
     note.sender = factory.newRelationship('org.budblocks', 'Buddy', sender.username);
     note.receiver = factory.newRelationship('org.budblocks', 'Buddy', receiver.username);
     note.amount = note_info.amount;
