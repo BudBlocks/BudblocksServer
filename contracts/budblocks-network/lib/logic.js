@@ -75,7 +75,6 @@ async function sendNote(note_info) {
     }
 
     let factory = getFactory();
-    // let new_num = sender.num_notes_sent++;
     let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat((sender.num_notes_sent++).toString()));
     note.sender = factory.newRelationship('org.budblocks', 'Buddy', sender.username);
     note.receiver = factory.newRelationship('org.budblocks', 'Buddy', receiver.username);
@@ -91,6 +90,7 @@ async function sendNote(note_info) {
 
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(receiver);
+    buddyRegistry.update(sender);
 
     let event = factory.newEvent('org.budblocks', 'NoteSent');
     event.sender = sender.username;
