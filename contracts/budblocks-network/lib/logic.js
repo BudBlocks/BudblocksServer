@@ -109,6 +109,34 @@ async function sendNote(note_info) {
  * @param {org.budblocks.acceptNote} trade - the trade to be processed
  * @transaction
  */
+async function rejectNote(trade) {
+    let note = trade.note; // just for ease of use
+    let receiver = note.receiver;
+
+    let noteRegistry = await getAssetRegistry('org.budblocks.Note');
+    noteRegistry.remove(note);
+
+    receiver.notes_pending.splice(receiver.notes_pending.indexOf(note), 1);
+
+    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    buddyRegistry.update(receiver);
+
+    let event = factory.newEvent('org.budblocks', 'NoteRejected');
+    event.sender = sender.username;
+    event.receiver = receiver.username;
+    event.amount = note.amount;
+    event.message = note.message;
+    event.expiration_date = note.expiration_date;
+    event.date_sent = note.date_sent;
+    event.note_number = note.number;
+    emit(event);
+}
+
+/**
+ * accept a note the user was sent by another buddy
+ * @param {org.budblocks.acceptNote} trade - the trade to be processed
+ * @transaction
+ */
 async function acceptNote(trade) {
     let note = trade.note; // just for ease of use
     let sender = note.sender;

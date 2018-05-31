@@ -45,6 +45,9 @@ transaction sendNote {
   o String message default=""
   o DateTime expiration_date
 }
+transaction rejectNote {
+  --> Note note
+}
 transaction acceptNote {
   --> Note note
 }
@@ -71,8 +74,18 @@ event InvalidNote {
 }
 
 event NoteSent {  // if you sent a note to someone
-  o String sender // name
-  o String receiver // name
+  o String sender // username
+  o String receiver // username
+
+  o Integer amount
+  o String message
+  o DateTime expiration_date
+  o DateTime date_sent
+  o String note_number
+}
+event NoteRejected {
+  o String sender // username
+  o String receiver // username
 
   o Integer amount
   o String message
@@ -81,8 +94,8 @@ event NoteSent {  // if you sent a note to someone
   o String note_number
 }
 event NoteAccepted {
-  o String sender // name
-  o String receiver // name
+  o String sender // username
+  o String receiver // username
 
   o Integer amount
   o String message
@@ -91,8 +104,8 @@ event NoteAccepted {
   o String note_number
 }
 event NoteResolved {  // if you resolved a note you gave someone
-  o String sender // name
-  o String receiver // name
+  o String sender // username
+  o String receiver // username
 
   o Integer amount
   o String message
