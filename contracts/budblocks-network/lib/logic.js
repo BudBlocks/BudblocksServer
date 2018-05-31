@@ -122,7 +122,7 @@ async function acceptNote(trade) {
     let factory = getFactory();
     sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number));
     receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
-    receiver.notes_pending.splice(receiver.notes_pending.indexOf(note));
+    receiver.notes_pending.splice(receiver.notes_pending.indexOf(note), 1);
 
     if (sender.earliest_note_index > -1) {
         let earliest_note = sender.notes_owed[sender.earliest_note_index];
@@ -200,8 +200,8 @@ async function resolveNote(trade) {
     if (sender.earliest_note_index > sender_index) {
         --sender.earliest_note_index;
     }
-    sender.notes_owed.splice(sender_index);
-    receiver.notes_received.splice(receiver.notes_received.indexOf(note));
+    sender.notes_owed.splice(sender_index, 1);
+    receiver.notes_received.splice(receiver.notes_received.indexOf(note), 1);
 
     //check if the note was overdue
     if (note.expiration_date.getTime() - trade.timestamp.getTime() < 0) {

@@ -3,7 +3,7 @@ namespace org.budblocks
 participant Buddy identified by username {
   o String username
   o String name
-  o String email optional
+  o String email
   o Integer balance default=0
   o Integer num_notes_sent default=0
 
