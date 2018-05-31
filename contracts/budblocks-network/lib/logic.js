@@ -111,6 +111,7 @@ async function sendNote(note_info) {
  */
 async function rejectNote(trade) {
     let note = trade.note; // just for ease of use
+    let sender = note.sender;
     let receiver = note.receiver;
 
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
@@ -121,6 +122,7 @@ async function rejectNote(trade) {
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(receiver);
 
+    let factory = getFactory();
     let event = factory.newEvent('org.budblocks', 'NoteRejected');
     event.sender = sender.username;
     event.receiver = receiver.username;
