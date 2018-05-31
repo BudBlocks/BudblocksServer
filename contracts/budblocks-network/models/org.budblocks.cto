@@ -7,9 +7,9 @@ participant Buddy identified by username {
   o Integer balance default=0
   o Integer num_notes_sent default=0
 
-  --> Note[] notes_received
-  --> Note[] notes_owed
-  --> Note[] notes_pending
+  --> Note[] notes_received optional
+  --> Note[] notes_owed optional
+  --> Note[] notes_pending optional
 
   o Integer earliest_note_index default=-1
 
