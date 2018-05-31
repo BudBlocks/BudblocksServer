@@ -105,7 +105,7 @@ async function sendNote(note_info) {
 }
 
 /**
- * resolve a note the user owes another buddy
+ * accept a note the user was sent by another buddy
  * @param {org.budblocks.acceptNote} trade - the trade to be processed
  * @transaction
  */
@@ -171,7 +171,7 @@ async function resolveNote(trade) {
 
     //move balance
     sender.balance = sender.balance - note.amount;
-    receiver.balance = receiver.balance - note.amount;
+    receiver.balance = receiver.balance + note.amount;
 
     //get new earliest note of sender
     if (sender.notes_owed.length > 1) {
@@ -202,6 +202,12 @@ async function resolveNote(trade) {
     }
     sender.notes_owed.splice(sender_index);
     receiver.notes_received.splice(receiver.notes_received.indexOf(note));
+
+    //check if the note was overdue
+    if (note.expiration_date.getTime() - trade.timestamp.getTime() < 0) {
+        sender.time_over.push(trade.timestamp.getTime() - note.expiration_date.getTime());
+        sender.amount_over.push(note.amount);
+    }
 
     //delete note
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
