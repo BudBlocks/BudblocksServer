@@ -145,7 +145,7 @@ async function acceptNote(trade) {
     let receiver = note.receiver;
 
     //if the note is already accepted
-    if (!note.accepted) {
+    if (note.accepted) {
         throw new Error('Note already accepted');
     }
     //if note is not in pending notes
