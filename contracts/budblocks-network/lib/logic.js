@@ -158,9 +158,9 @@ async function acceptNote(trade) {
         throw new Error('Note already accepted');
     }
     //if note is not in pending notes
-    if (receiver.notes_pending.indexOf(note) < 0) {
-        throw new Error('Note not in pending notes');
-    }
+    // if (receiver.notes_pending.indexOf(note) < 0) {
+    //     throw new Error('Note not in pending notes');
+    // }
 
     note.accepted = true;
 
