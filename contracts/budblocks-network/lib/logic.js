@@ -158,14 +158,16 @@ async function acceptNote(trade) {
         throw new Error('Note already accepted');
     }
     //if note is not in pending notes
+    let nums = [];
     let not_found = true;
     for (let i = 0; i < receiver.notes_pending.length; i++) {
         if (receiver.notes_pending[i].number === note.number) {
             not_found = false;
         }
+        nums.push(receiver.notes_pending.number);
     }
     if (not_found) {
-        throw new Error('Note not in pending notes');
+        throw new Error('Note not in pending notes' + nums.join(', ') + ' : ' + note.number);
     }
 
     note.accepted = true;
