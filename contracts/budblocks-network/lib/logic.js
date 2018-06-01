@@ -164,7 +164,7 @@ async function acceptNote(trade) {
         if (receiver.notes_pending[i].number === note.number) {
             not_found = false;
         }
-        nums.push(receiver.notes_pending.number);
+        nums.push(receiver.notes_pending[i].number);
     }
     if (not_found) {
         throw new Error('Note not in pending notes' + nums.join(', ') + ' : ' + note.number);
