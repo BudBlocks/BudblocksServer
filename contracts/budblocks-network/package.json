@@ -3,7 +3,7 @@
     "composer": "^0.19.5"
   },
   "name": "budblocks-network",
-  "version": "1.6.59",
+  "version": "1.6.63",
   "description": "Blockchain for Buds",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/budblocks-network.bna",
