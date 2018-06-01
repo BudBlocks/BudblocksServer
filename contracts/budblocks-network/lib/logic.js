@@ -114,6 +114,15 @@ async function rejectNote(trade) {
     let sender = note.sender;
     let receiver = note.receiver;
 
+    //if the note is already accepted
+    if (note.accepted) {
+        throw new Error('Note already accepted');
+    }
+    //if note is not in pending notes
+    if (receiver.notes_pending.indexOf(note) < 0) {
+        throw new Error('Note not in pending notes');
+    }
+
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.remove(note);
 
@@ -149,7 +158,7 @@ async function acceptNote(trade) {
         throw new Error('Note already accepted');
     }
     //if note is not in pending notes
-    if (!receiver.notes_pending.includes(note)) {
+    if (receiver.notes_pending.indexOf(note) < 0) {
         throw new Error('Note not in pending notes');
     }
 
