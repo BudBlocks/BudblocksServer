@@ -153,8 +153,8 @@ async function acceptNote(trade) {
     let sender = note.sender;
     let receiver2 = note.receiver;
 
-    let participantRegistry = await getParticipantRegistry('org.budblocks.Buddy');
-    let receiver = await participantRegistry.get(receiver2.username);
+    // let participantRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    // let receiver = await participantRegistry.get(receiver2.username);
 
     //if the note is already accepted
     if (note.accepted) {
