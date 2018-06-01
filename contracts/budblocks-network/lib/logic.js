@@ -151,10 +151,12 @@ async function rejectNote(trade) {
 async function acceptNote(trade) {
     let note = trade.note; // just for ease of use
     let sender = note.sender;
-    let receiver = note.receiver;
+    let receiver2 = note.receiver;
 
-    // let participantRegistry = await getParticipantRegistry('org.budblocks.Buddy');
-    // let receiver = await participantRegistry.get(receiver2.username);
+    let participantRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    let receiver = await participantRegistry.get(receiver2.username);
+
+    let assetRegistry = await getAssetRegistry('org.budblocks.Note');
 
     //if the note is already accepted
     if (note.accepted) {
@@ -164,10 +166,11 @@ async function acceptNote(trade) {
     let nums = [];
     let not_found = true;
     for (let i = 0; i < receiver.notes_pending.length; i++) {
-        if (receiver.notes_pending[i].number === note.number) {
+        let tmpnote = await assetRegistry.get(receiver.notes_pending[i]);
+        if (tmpnote.number === note.number) {
             not_found = false;
         }
-        nums.push(receiver.notes_pending[i].number);
+        nums.push(tmpnote.number);
     }
     if (not_found) {
         throw new Error('Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
