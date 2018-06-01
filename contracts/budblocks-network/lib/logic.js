@@ -176,10 +176,10 @@ async function acceptNote(trade) {
     let factory = getFactory();
     sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number));
     receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
-    let index = -1
+    let index = -1;
     for (let i = 0; i < receiver.notes_pending.length; i++) {
         if (receiver.notes_pending[i].number === note.number) {
-            notes_pending.splice(i, 1);
+            receiver.notes_pending.splice(i, 1);
         }
     }
 
