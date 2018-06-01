@@ -151,7 +151,7 @@ async function rejectNote(trade) {
 async function acceptNote(trade) {
     let note = trade.note; // just for ease of use
     let sender = note.sender;
-    let receiver2 = note.receiver;
+    let receiver = note.receiver;
 
     // let participantRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     // let receiver = await participantRegistry.get(receiver2.username);
