@@ -144,6 +144,15 @@ async function acceptNote(trade) {
     let sender = note.sender;
     let receiver = note.receiver;
 
+    //if the note is already accepted
+    if (!note.accepted) {
+        throw new Error('Note already accepted');
+    }
+    //if note is not in pending notes
+    if (!receiver.notes_pending.includes(note)) {
+        throw new Error('Note not in pending notes');
+    }
+
     note.accepted = true;
 
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
@@ -197,6 +206,17 @@ async function resolveNote(trade) {
         event.amount = note.amount;
         emit(event);
         throw new Error('Balance Too Low');
+    }
+
+    //check accepted, check in notes_owed and notes_received
+    if (!note.accepted) {
+        throw new Error('Note not accepted by the recipient');
+    }
+    if (!sender.notes_owed.includes(note)) {
+        throw new Error('Note not in sent notes of sender');
+    }
+    if (!receiver.notes_received.includes(note)) {
+        throw new Error('Note not in received notes of recipient');
     }
 
     //move balance
