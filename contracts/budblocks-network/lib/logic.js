@@ -10,7 +10,7 @@ async function addBalance(deposit) {
 
     buddy.balance = buddy.balance + deposit.amount;
 
-    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    const buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(buddy);
 }
 
@@ -33,7 +33,7 @@ async function removeBalance(withdrawl) {
 
     buddy.balance = buddy.balance - withdrawl.amount;
 
-    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    const buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(buddy);
 }
 
@@ -83,13 +83,14 @@ async function sendNote(note_info) {
     note.expiration_date = note_info.expiration_date;
     note.date_sent = note_info.timestamp;
 
-    let noteRegistry = await getAssetRegistry('org.budblocks.Note');
-    noteRegistry.add(note);
     // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
     // receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
     receiver.notes_pending.push(note);
 
-    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    const noteRegistry = await getAssetRegistry('org.budblocks.Note');
+    noteRegistry.add(note);
+
+    const buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(receiver);
     buddyRegistry.update(sender);
 
@@ -291,11 +292,11 @@ async function resolveNote(trade) {
     }
 
     //delete note
-    let noteRegistry = await getAssetRegistry('org.budblocks.Note');
+    const noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.remove(note);
 
     //update buddyRegistry
-    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    const buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(sender);
     buddyRegistry.update(receiver);
 
