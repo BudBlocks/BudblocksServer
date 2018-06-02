@@ -85,8 +85,9 @@ async function sendNote(note_info) {
 
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.add(note);
-
-    receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
+    // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
+    // receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
+    receiver.notes_pending.push(note);
 
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(receiver);
@@ -179,8 +180,12 @@ async function acceptNote(trade) {
     noteRegistry.update(note);
 
     let factory = getFactory();
-    sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number));
-    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
+// RJC - trying not creating a relationship during push, making an assumption that the type figures this out
+//  sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number
+    sender.notes_owed.push(note);
+// RJC - trying not creating a relationship during push, making an assumption that the type figures this out
+//    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
+    receiver.notes_received.push(note);
     let index = -1;
     for (let i = 0; i < receiver.notes_pending.length; i++) {
         if (receiver.notes_pending[i].number === note.number) {
