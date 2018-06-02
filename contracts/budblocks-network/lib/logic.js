@@ -176,9 +176,6 @@ async function acceptNote(trade) {
 
     note.accepted = true;
 
-    let noteRegistry = await getAssetRegistry('org.budblocks.Note');
-    noteRegistry.update(note);
-
     let factory = getFactory();
 // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
 //  sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number
@@ -186,7 +183,7 @@ async function acceptNote(trade) {
 // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
 //    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
     receiver.notes_received.push(note);
-    let index = -1;
+
     for (let i = 0; i < receiver.notes_pending.length; i++) {
         if (receiver.notes_pending[i].number === note.number) {
             receiver.notes_pending.splice(i, 1);
@@ -203,7 +200,11 @@ async function acceptNote(trade) {
         sender.earliest_note_index = 0;
     }
 
-    let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
+    // update
+    const noteRegistry = await getAssetRegistry('org.budblocks.Note');
+    noteRegistry.update(note);
+
+    const buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
     buddyRegistry.update(sender);
     buddyRegistry.update(receiver);
 
