@@ -107,8 +107,8 @@ async function sendNote(note_info) {
 }
 
 /**
- * accept a note the user was sent by another buddy
- * @param {org.budblocks.acceptNote} trade - the trade to be processed
+ * reject a note the user was sent by another buddy
+ * @param {org.budblocks.rejectNote} trade - the trade to be processed
  * @transaction
  */
 async function rejectNote(trade) {
@@ -171,9 +171,9 @@ async function acceptNote(trade) {
         }
         nums.push(receiver.notes_pending[i].number);
     }
-    if (not_found) {
-        throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
-    }
+    // if (not_found) {
+    throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
+    // }
 
     note.accepted = true;
 
