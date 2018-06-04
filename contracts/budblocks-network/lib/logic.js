@@ -167,13 +167,13 @@ async function acceptNote(trade) {
     let not_found = true;
     for (let i = 0; i < receiver.notes_pending.length; i++) {
         if (receiver.notes_pending[i].number === note.number) {
-            not_found = false;
+            not_found = true;
         }
         nums.push(receiver.notes_pending[i].number);
     }
-    // if (not_found) {
-    throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
-    // }
+    if (not_found) {
+        throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
+    }
 
     note.accepted = true;
 
