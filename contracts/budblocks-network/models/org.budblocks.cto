@@ -16,7 +16,7 @@ participant Buddy identified by username {
   o Integer[] time_over // the time youve been over in seconds each time you were over
   o Integer[] amount_over // the amount the note was worth each time you went over
 
-  o String version default="1.7.06" optional
+  // o String version default="1.7.06" optional
 }
 
 asset Note identified by number {

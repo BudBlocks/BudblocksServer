@@ -162,27 +162,27 @@ async function acceptNote(trade) {
     if (note.accepted) {
         throw new Error('Note already accepted');
     }
-    //if note is not in pending notes
-    // let nums = [];
-    // let not_found = true;
-    // for (let i = 0; i < receiver.notes_pending.length; i++) {
-    //     if (receiver.notes_pending[i].number === note.number) {
-    //         not_found = false;
-    //     }
-    //     nums.push(receiver.notes_pending[i].number);
-    // }
-    // if (not_found) {
-    // throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
-    // }
+    // if note is not in pending notes
+    let nums = [];
+    let not_found = true;
+    for (let i = 0; i < receiver.notes_pending.length; i++) {
+        if (receiver.notes_pending[i].number === note.number) {
+            not_found = false;
+        }
+        nums.push(receiver.notes_pending[i].number);
+    }
+    if (not_found) {
+        throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
+    }
 
     note.accepted = true;
 
     let factory = getFactory();
-// RJC - trying not creating a relationship during push, making an assumption that the type figures this out
-//  sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number
+    // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
+    //  sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number
     sender.notes_owed.push(note);
-// RJC - trying not creating a relationship during push, making an assumption that the type figures this out
-//    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
+    // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
+    //    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
     receiver.notes_received.push(note);
 
     for (let i = 0; i < receiver.notes_pending.length; i++) {
