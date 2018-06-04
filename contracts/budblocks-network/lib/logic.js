@@ -85,7 +85,12 @@ async function sendNote(note_info) {
 
     // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
     // receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
-    receiver.notes_pending.push(note);
+    if (receiver.notes_pending){
+        receiver.notes_pending.push(note);
+    }
+    else {
+        receiver.notes_pending = [note];
+    }
 
     const noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.add(note);
@@ -163,33 +168,29 @@ async function acceptNote(trade) {
         throw new Error('Note already accepted');
     }
     // if note is not in pending notes
-    let nums = [];
-    let not_found = true;
-    for (let i = 0; i < receiver.notes_pending.length; i++) {
-        if (receiver.notes_pending[i].number === note.number) {
-            not_found = true;
-        }
-        nums.push(receiver.notes_pending[i].number);
-    }
-    if (not_found) {
-        throw new Error('ALWAYS THROWN: Note ' + note.number + ' not in pending notes - ' + nums.join(', '));
+    if (receiver.notes_pending.indexOf(note) < 0) {
+        throw new Error('Note not in pending notes');
     }
 
     note.accepted = true;
 
     let factory = getFactory();
-    // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
-    //  sender.notes_owed.push(factory.newRelationship('org.budblocks', 'Note', note.number
-    sender.notes_owed.push(note);
-    // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
-    //    receiver.notes_received.push(sender.notes_owed[sender.notes_owed.length - 1]);
-    receiver.notes_received.push(note);
 
-    for (let i = 0; i < receiver.notes_pending.length; i++) {
-        if (receiver.notes_pending[i].number === note.number) {
-            receiver.notes_pending.splice(i, 1);
-        }
+    if (sender.notes_owed) {
+        sender.notes_owed.push(note);
     }
+    else {
+        sender.notes_owed = [note];
+    }
+
+    if (receiver.notes_received) {
+        receiver.notes_received.push(note);
+    }
+    else {
+        receiver.notes_received = [note];
+    }
+
+    receiver.notes_pending.splice(receiver.notes_pending.indexOf(note), 1);
 
     if (sender.earliest_note_index > -1) {
         let earliest_note = sender.notes_owed[sender.earliest_note_index];
