@@ -70,9 +70,17 @@ async function sendNote(note_info) {
             event.expiration_date = earliest_note.expiration_date;
             event.date_sent = earliest_note.date_sent;
             emit(event);
+            // |
+            // |
+            // V
             throw new Error('Account Frozen');
+            // ^
+            // |
+            // |
         }
     }
+
+    console.log('no errors in checking for problems with the note info');
 
     let factory = getFactory();
     let note = factory.newResource('org.budblocks', 'Note', sender.username.concat('.').concat((sender.num_notes_sent++).toString()));
@@ -83,6 +91,8 @@ async function sendNote(note_info) {
     note.expiration_date = note_info.expiration_date;
     note.date_sent = note_info.timestamp;
 
+    console.log('created note');
+
     // RJC - trying not creating a relationship during push, making an assumption that the type figures this out
     // receiver.notes_pending.push(factory.newRelationship('org.budblocks', 'Note', note.number));
     if (receiver.notes_pending){
@@ -92,6 +102,8 @@ async function sendNote(note_info) {
         receiver.notes_pending = [note];
     }
 
+    console.log('note pushed');
+
     const noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.add(note);
 
@@ -99,16 +111,19 @@ async function sendNote(note_info) {
     buddyRegistry.update(receiver);
     buddyRegistry.update(sender);
 
+    console.log('registries updated');
+
     let event = factory.newEvent('org.budblocks', 'NoteSent');
     event.sender = sender.username;
     event.receiver = receiver.username;
-
     event.amount = note_info.amount;
     event.message = note_info.message;
     event.expiration_date = note_info.expiration_date;
     event.date_sent = note_info.timestamp;
     event.note_number = note.number;
     emit(event);
+
+    console.log('success');
 }
 
 /**
@@ -170,6 +185,15 @@ async function acceptNote(trade) {
     // if note is not in pending notes
     if (receiver.notes_pending.indexOf(note) < 0) {
         throw new Error('Note not in pending notes');
+    }
+    if (trade.timestamp.getTime() - note.date_sent.getTime() > 86400000) {
+        // |
+        // |
+        // V
+        throw new Error('Note Expired');
+        // ^
+        // |
+        // |
     }
 
     note.accepted = true;
