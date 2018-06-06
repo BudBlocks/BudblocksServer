@@ -53,13 +53,13 @@ async function sendNote(note_info) {
         emit(event);
         throw new Error('recipient is the same as sender');
     }
-    if (note_info.expiration_date.getTime() < note_info.timestamp.getTime()) {
-        let factory = getFactory();
-        let event = factory.newEvent('org.budblocks', 'InvalidNote');
-        event.reason = 'due date is before current date';
-        emit(event);
-        throw new Error('due date is before current date');
-    }
+    // if (note_info.expiration_date.getTime() < note_info.timestamp.getTime()) {
+    //     let factory = getFactory();
+    //     let event = factory.newEvent('org.budblocks', 'InvalidNote');
+    //     event.reason = 'due date is before current date';
+    //     emit(event);
+    //     throw new Error('due date is before current date');
+    // }
     if (sender.earliest_note_index > -1) {
         let earliest_note = sender.notes_owed[sender.earliest_note_index];
         if (earliest_note.expiration_date.getTime() < note_info.timestamp.getTime()) {
