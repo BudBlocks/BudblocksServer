@@ -101,6 +101,12 @@ async function sendNote(note_info) {
     else {
         receiver.notes_pending = [note];
     }
+    if (sender.notes_waiting){
+        sender.notes_waiting.push(note);
+    }
+    else {
+        sender.notes_waiting = [note];
+    }
 
     console.log('note pushed');
 
@@ -144,10 +150,15 @@ async function rejectNote(trade) {
     if (receiver.notes_pending.indexOf(note) < 0) {
         throw new Error('Note not in pending notes');
     }
+    //if note is not in waiting notes
+    if (sender.notes_waiting.indexOf(note) < 0) {
+        throw new Error('Note not in waiting notes');
+    }
 
     let noteRegistry = await getAssetRegistry('org.budblocks.Note');
     noteRegistry.remove(note);
 
+    sender.notes_waiting.splice(sender.notes_waiting.indexOf(note), 1);
     receiver.notes_pending.splice(receiver.notes_pending.indexOf(note), 1);
 
     let buddyRegistry = await getParticipantRegistry('org.budblocks.Buddy');
@@ -186,6 +197,10 @@ async function acceptNote(trade) {
     if (receiver.notes_pending.indexOf(note) < 0) {
         throw new Error('Note not in pending notes');
     }
+    //if note is not in waiting notes
+    if (sender.notes_waiting.indexOf(note) < 0) {
+        throw new Error('Note not in waiting notes');
+    }
     if (trade.timestamp.getTime() - note.date_sent.getTime() > 86400000) {
         // |
         // |
@@ -214,6 +229,7 @@ async function acceptNote(trade) {
         receiver.notes_received = [note];
     }
 
+    sender.notes_waiting.splice(sender.notes_waiting.indexOf(note), 1);
     receiver.notes_pending.splice(receiver.notes_pending.indexOf(note), 1);
 
     if (sender.earliest_note_index > -1) {
