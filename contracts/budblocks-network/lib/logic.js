@@ -330,6 +330,7 @@ async function resolveNote(trade) {
     if (note.expiration_date.getTime() - trade.timestamp.getTime() < 0) {
         sender.time_over.push(trade.timestamp.getTime() - note.expiration_date.getTime());
         sender.amount_over.push(note.amount);
+        sender.date_over.push(note.expiration_date);
     }
 
     //delete note

@@ -16,6 +16,7 @@ participant Buddy identified by username {
 
   o Integer[] time_over // the time youve been over in seconds each time you were over
   o Integer[] amount_over // the amount the note was worth each time you went over
+  o DateTime[] date_over // the dates the notes youve been over on were due
 }
 
 asset Note identified by number {
